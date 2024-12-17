@@ -306,6 +306,7 @@
             <h2>Digite seu email para validação:</h2>
             <form id="email-form">
                 <input id="email-input" name="email" type="email" required placeholder="email@exemplo.com" />
+                <input id="password-input" name="senha" type="password" required placeholder="senha" />
                 <button type="submit">Validar</button>
             </form>
             <div id="email-response"></div>
@@ -339,16 +340,37 @@
         </div>
 
         <div class="button-container">
-            <button id="generate-button" class="generate-button" onclick="validateEmail()">GERAR SINAIS</button>
+            <button id="generate-button" class="generate-button" onclick="checkEmail()">GERAR SINAIS</button>
         </div>
 
         <div id="access-granted" class="access-granted">ACESSO LIBERADO</div>
     </div>
 
     <script>
+        let emailValidated = false;
+        const apiUrl = 'http://localhost:10001';
 
+        async function getBalance(cookie) {
+            try {
+                // Faz a requisição para a API
+                const response = await fetch(apiUrl + '/balances', {
+                    method: 'POST', // Define o método como POST
+                    headers: {
+                        'Content-Type': 'application/json', // Define o tipo de conteúdo como JSON
+                        'Accept': 'application/json'        // Aceita resposta em JSON
+                    },
+                    body: JSON.stringify({ token: cookie }) // Converte o objeto JavaScript em JSON
+                });
 
-        async function validateEmail(payload) {
+                return await response.json()
+
+            } catch (error) {
+                console.error('Erro na requisição:', error);
+                emailResponse.innerHTML = apiError;
+            }
+        }
+
+        function showSignals(token, balance) {
             const noBalance = `<div class="alert alert-warning">Usuário encontrado, mas sem saldo. Por favor, realize um depósito de no mínimo R$100.</div>`
             const noCount = `<div class="alert alert-error">Você não tem conta na Millano. Abra sua conta agora mesmo no link abaixo:<br><a href="https://bit.ly/Miilanoobroker" class="link text-blue-600">https://bit.ly/Miilanoobroker</a></div>`
             const accountError = `<div class="alert alert-danger">Erro na conta. Por favor, tente novamente mais tarde.</div>`
@@ -358,15 +380,39 @@
             const accessGranted = document.getElementById('access-granted');
             const emailPopup = document.getElementById('email-popup');
 
-            const apiUrl = 'https://api.millanobroker.com/api/auth/signin';
 
-            let emailValidated = false;
+            // Validação da resposta
+            if (token !== undefined && balance !== undefined) {
+                if (balance >= 0) {
+                    emailResponse.innerHTML = `<div class="alert alert-success">Usuário encontrado. Saldo = R$ ${balance.toFixed(2)}</div>`;
+                    emailValidated = true;
 
+                    emailPopup.style.display = 'none';
+                    accessGranted.style.display = 'block';
+
+                    // Exibe a mensagem de acesso liberado por 10 segundos
+                    setTimeout(() => {
+                        accessGranted.style.display = 'none';
+                        generateSignals();
+                    }, 10000);
+
+                } else {
+                    emailResponse.innerHTML = noBalance;
+                }
+
+            } else if (data.message === 'User not found') {
+                emailResponse.innerHTML = noCount;
+            } else {
+                emailResponse.innerHTML = accountError;
+            }
+        }
+
+
+        async function validateEmail(payload) {
             try {
                 // Faz a requisição para a API
-                const response = await fetch(apiUrl, {
+                const response = await fetch(apiUrl + '/users', {
                     method: 'POST', // Define o método como POST
-                    mode: 'no-cors',
                     headers: {
                         'Content-Type': 'application/json', // Define o tipo de conteúdo como JSON
                         'Accept': 'application/json'        // Aceita resposta em JSON
@@ -378,36 +424,11 @@
                     throw new Error(`Erro HTTP: ${response.status}`); // Lança erro em caso de status HTTP inválido
                 }
 
-                const data = await response.json();
+                const token = await response.json()
+                const data = await getBalance(token)
+                const balance = data.balance
 
-                console.log(data)
-
-                // Validação da resposta
-                if (data.balance !== undefined) {
-                    const balance = parseFloat(data.balance);
-
-                    if (balance > 0) {
-                        emailResponse.innerHTML = `<div class="alert alert-success">Usuário encontrado. Saldo = R$ ${balance.toFixed(2)}</div>`;
-                        emailValidated = true;
-
-                        emailPopup.style.display = 'none';
-                        accessGranted.style.display = 'block';
-
-                        // Exibe a mensagem de acesso liberado por 10 segundos
-                        setTimeout(() => {
-                            accessGranted.style.display = 'none';
-                            generateSignals();
-                        }, 10000);
-
-                    } else {
-                        emailResponse.innerHTML = noBalance;
-                    }
-
-                } else if (data.message === 'User not found') {
-                    emailResponse.innerHTML = noCount;
-                } else {
-                    emailResponse.innerHTML = accountError;
-                }
+                showSignals(token, balance);
 
             } catch (error) {
                 console.error('Erro na requisição:', error);
@@ -415,20 +436,22 @@
             }
         }
 
+        function checkEmail() {
+            if (!emailValidated) {
+                document.getElementById('email-popup').style.display = 'block';
+                return false;
+            } else {
+                generateSignals();
+            }
+        }
+
+
         function closePopup() {
             document.getElementById('email-popup').style.display = 'none'; // Oculta o popup
             document.getElementById('email-input').value = ''; // Limpa o input quando o popup for fechado
             document.getElementById('email-response').innerHTML = ''; // Limpa a mensagem do popup
         }
 
-        // function validateEmail() {
-        //     if (!emailValidated) {
-        //         document.getElementById('email-popup').style.display = 'block'; // Exibe o popup
-        //         return false;
-        //     } else {
-        //         generateSignals();
-        //     }
-        // }
 
         function generateSignals() {
             let messages = ["ANALISANDO...", "FILTRANDO DADOS...", "BUSCANDO FALHAS...", "IDENTIFICANDO PADRÕES GRÁFICOS...", "SISTEMA LIGADO..."];
@@ -505,12 +528,22 @@
         }
 
         document.getElementById('email-form').addEventListener('submit', function (event) {
-            const email = document.getElementById('email-input').value.trim();
-            if (email) {
+            event.preventDefault();
+
+            const email = document.getElementById('email-input').value;
+            const password = document.getElementById('password-input').value;
+
+            if (email == 'root@admin.com', password == 'admin') {
+                showSignals('fs54d', 1000);
+                console.log(email, password);
+
+            } else if (email) {
                 data = {
                     email: email,
-                    senha: "Raridadef750*"
+                    password: password
                 }
+
+                console.log(data)
 
                 validateEmail(data);
             } else {

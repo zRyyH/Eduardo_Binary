@@ -8,8 +8,8 @@ CORS(app)
 
 
 # Rota que faz o proxy para a API externa
-@app.route('/', methods=['POST'])
-def proxyEduardo():
+@app.route('/users', methods=['POST'])
+def usersEduardo():
     try:
         # Dados recebidos do frontend
         data = request.json
@@ -21,8 +21,38 @@ def proxyEduardo():
             headers={'Content-Type': 'application/json'}
         )
 
+        token = response.headers['Set-Cookie'].split(';')[0]
+
         # Retorna a resposta da API externa para o frontend
-        return jsonify(response.json()), response.status_code
+        return jsonify(token), response.status_code
+
+    except Exception as e:
+        # Trata erros e retorna mensagem amigável
+        return jsonify({'error': 'Erro ao conectar com a API externa', 'details': str(e)}), 500
+
+
+# Rota que faz o proxy para a API externa
+@app.route('/balances', methods=['POST'])
+def balancesEduardo():
+    try:
+        token = request.json['token']
+
+        # Configurar o cabeçalho da requisição
+        headers = {
+            'accept': 'application/json',
+            'content-type': 'application/json',
+            'cookie': token
+        }
+
+        # Requisição para a API externa
+        response = requests.get('https://api.millanobroker.com/api/user/balances', headers=headers)
+
+        balances = list(dict(response.json())['data'])
+
+        for balance in balances:
+            if balance['type'] == 'REAL':
+                return jsonify({'balance': balance['balance']}), 200
+        return jsonify({}), 401
 
     except Exception as e:
         # Trata erros e retorna mensagem amigável
@@ -30,8 +60,4 @@ def proxyEduardo():
 
 
 if __name__ == '__main__':
-<<<<<<< HEAD
-    app.run(debug=True, port=10000)
-=======
-    app.run(debug=True, port=30000)
->>>>>>> 18cedbb17819d17d7f8af39808cd0aef624528ec
+    app.run(debug=True, port=10001)
