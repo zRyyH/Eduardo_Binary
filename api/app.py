@@ -30,4 +30,8 @@ def proxyEduardo():
 
 
 if __name__ == '__main__':
+<<<<<<< HEAD
     app.run(debug=True, port=10000)
+=======
+    app.run(debug=True, port=30000)
+>>>>>>> 18cedbb17819d17d7f8af39808cd0aef624528ec
