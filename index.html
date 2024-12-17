@@ -347,8 +347,17 @@
     </div>
 
     <script>
+        const noBalance = `<div class="alert alert-warning">Usuário encontrado, mas sem saldo. Por favor, realize um depósito de no mínimo R$100.</div>`
+        const noCount = `<div class="alert alert-error">Você não tem conta na Millano. Abra sua conta agora mesmo no link abaixo:<br><a href="https://bit.ly/Miilanoobroker" class="link text-blue-600">https://bit.ly/Miilanoobroker</a></div>`
+        const accountError = `<div class="alert alert-danger">Erro na conta. Por favor, tente novamente mais tarde.</div>`
+        const apiError = `<div class="alert alert-danger">Erro ao conectar com o servidor. Verifique sua conexão e tente novamente.</div>`
+
+        const emailResponse = document.getElementById('email-response');
+        const accessGranted = document.getElementById('access-granted');
+        const emailPopup = document.getElementById('email-popup');
+
         let emailValidated = false;
-        const apiUrl = 'http://localhost:10001';
+        const apiUrl = 'https://eduardobinary.awpsoft.com.br';
 
         async function getBalance(cookie) {
             try {
@@ -366,21 +375,10 @@
 
             } catch (error) {
                 console.error('Erro na requisição:', error);
-                emailResponse.innerHTML = apiError;
             }
         }
 
         function showSignals(token, balance) {
-            const noBalance = `<div class="alert alert-warning">Usuário encontrado, mas sem saldo. Por favor, realize um depósito de no mínimo R$100.</div>`
-            const noCount = `<div class="alert alert-error">Você não tem conta na Millano. Abra sua conta agora mesmo no link abaixo:<br><a href="https://bit.ly/Miilanoobroker" class="link text-blue-600">https://bit.ly/Miilanoobroker</a></div>`
-            const accountError = `<div class="alert alert-danger">Erro na conta. Por favor, tente novamente mais tarde.</div>`
-            const apiError = `<div class="alert alert-danger">Erro ao conectar com o servidor. Verifique sua conexão e tente novamente.</div>`
-
-            const emailResponse = document.getElementById('email-response');
-            const accessGranted = document.getElementById('access-granted');
-            const emailPopup = document.getElementById('email-popup');
-
-
             // Validação da resposta
             if (token !== undefined && balance !== undefined) {
                 if (balance >= 0) {
@@ -403,7 +401,7 @@
             } else if (data.message === 'User not found') {
                 emailResponse.innerHTML = noCount;
             } else {
-                emailResponse.innerHTML = accountError;
+                emailResponse.innerHTML = noCount;
             }
         }
 
@@ -421,6 +419,8 @@
                 });
 
                 if (!response.ok) {
+                    console.log('Hello')
+                    emailResponse.innerHTML = noCount;
                     throw new Error(`Erro HTTP: ${response.status}`); // Lança erro em caso de status HTTP inválido
                 }
 
@@ -428,11 +428,12 @@
                 const data = await getBalance(token)
                 const balance = data.balance
 
+                console.log(token, balance);
+
                 showSignals(token, balance);
 
             } catch (error) {
                 console.error('Erro na requisição:', error);
-                emailResponse.innerHTML = apiError;
             }
         }
 

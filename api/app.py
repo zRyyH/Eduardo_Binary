@@ -2,10 +2,8 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import requests
 
-
 app = Flask(__name__)
 CORS(app)
-
 
 # Rota que faz o proxy para a API externa
 @app.route('/users', methods=['POST'])
@@ -29,7 +27,6 @@ def usersEduardo():
     except Exception as e:
         # Trata erros e retorna mensagem amigável
         return jsonify({'error': 'Erro ao conectar com a API externa', 'details': str(e)}), 500
-
 
 # Rota que faz o proxy para a API externa
 @app.route('/balances', methods=['POST'])
