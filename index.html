@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BINARI ORDER BOT</title>
+    <style>
+        /* Estilos do gerador de sinais */
+
+        /* Estilo do contêiner principal */
+        .container {
+            background-color: #444;
+            /* Cor de fundo do contêiner */
+            padding: 20px;
+            /* Preenchimento interno */
+            border-radius: 10px;
+            /* Bordas arredondadas */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            /* Sombra */
+            width: 100%;
+            /* Largura total */
+            height: 80%;
+            /* Altura do contêiner */
+            display: flex;
+            /* Flexbox para centralizar o conteúdo */
+            flex-direction: column;
+            /* Direção da coluna */
+            align-items: center;
+            /* Alinhamento horizontal */
+            justify-content: center;
+            /* Alinhamento vertical */
+        }
+
+        /* Estilo da barra superior que mostra informações */
+        .top-bar {
+            display: flex;
+            /* Flexbox para alinhamento */
+            justify-content: space-around;
+            /* Espaço entre os itens */
+            width: 100%;
+            /* Largura total */
+            padding: 5px 0;
+            /* Preenchimento interno */
+            margin-bottom: 10px;
+            /* Margem inferior */
+        }
+
+        /* Estilo dos itens na barra superior */
+        .top-bar div {
+            flex: 1;
+            /* Ocupa igual espaço */
+            text-align: center;
+            /* Alinhamento do texto */
+            background-color: #555;
+            /* Cor de fundo */
+            color: #fff;
+            /* Cor do texto */
+            padding: 20px;
+            /* Preenchimento interno */
+            margin: 0 5px;
+            /* Margem lateral */
+            font-size: 18px;
+            /* Tamanho da fonte */
+            border-radius: 5px;
+            /* Bordas arredondadas */
+            min-height: 15px;
+            /* Altura mínima */
+        }
+
+        /* Estilo do contêiner do período */
+        .time-frame-container {
+            margin-bottom: 20px;
+            /* Margem inferior */
+            padding: 10px;
+            /* Preenchimento interno */
+            background-color: #555;
+            /* Cor de fundo */
+            border-radius: 5px;
+            /* Bordas arredondadas */
+            width: 200px;
+            /* Largura ajustada */
+            display: flex;
+            /* Flexbox para alinhamento */
+            justify-content: center;
+            /* Alinhamento horizontal */
+            align-items: center;
+            /* Alinhamento vertical */
+        }
+
+        /* Estilo do rótulo do período */
+        .time-frame-container label {
+            margin-right: 10px;
+            /* Margem direita */
+            color: #fff;
+            /* Cor do texto */
+            font-size: 16px;
+            /* Tamanho da fonte */
+        }
+
+        /* Estilo do menu suspenso do período */
+        .time-frame-container select {
+            padding: 5px;
+            /* Preenchimento interno */
+            font-size: 16px;
+            /* Tamanho da fonte */
+            background-color: #777;
+            /* Cor de fundo */
+            color: #fff;
+            /* Cor do texto */
+            border: none;
+            /* Sem borda */
+            border-radius: 5px;
+            /* Bordas arredondadas */
+        }
+
+        /* Estilo da seção das setas */
+        .arrows {
+            display: flex;
+            /* Flexbox para alinhamento */
+            flex-direction: column;
+            /* Direção da coluna */
+            align-items: center;
+            /* Alinhamento horizontal */
+            padding: 20px 0;
+            /* Preenchimento interno */
+            margin-bottom: 20px;
+            /* Margem inferior */
+        }
+
+        /* Estilo das setas */
+        .arrow {
+            position: relative;
+            /* Posicionamento relativo para efeitos */
+            width: 180px;
+            /* Largura das setas */
+            height: 180px;
+            /* Altura das setas */
+            margin: 20px 0;
+            /* Margem vertical */
+            display: flex;
+            /* Flexbox para alinhamento */
+            align-items: center;
+            /* Alinhamento vertical */
+            justify-content: center;
+            /* Alinhamento horizontal */
+            color: #fff;
+            /* Cor do texto */
+            font-weight: bold;
+            /* Negrito */
+            font-size: 20px;
+            /* Tamanho da fonte */
+            text-align: center;
+            /* Alinhamento do texto */
+            border-radius: 5px;
+            /* Bordas arredondadas */
+        }
+
+        /* Estilo da seta de compra */
+        .arrow-up {
+            background-color: #089444;
+            /* Cor de fundo */
+            box-shadow: 0 4px 8px rgba(0, 255, 0, 0.3);
+            /* Sombra */
+            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+            /* Forma da seta */
+        }
+
+        /* Estilo da seta de venda */
+        .arrow-down {
+            background-color: #ED1C24;
+            /* Cor de fundo */
+            box-shadow: 0 4px 8px rgba(255, 0, 0, 0.3);
+            /* Sombra */
+            clip-path: polygon(0% 0%, 100% 0%, 50% 100%);
+            /* Forma da seta */
+        }
+
+        /* Estilo do contêiner do botão */
+        .button-container {
+            padding: 20px 0;
+            /* Preenchimento interno */
+        }
+
+        /* Estilo do botão de gerar sinais */
+        .generate-button {
+            padding: 15px 30px;
+            /* Preenchimento interno */
+            font-size: 18px;
+            /* Tamanho da fonte */
+            background-color: #555;
+            /* Cor de fundo */
+            color: #fff;
+            /* Cor do texto */
+            border: 1px solid #777;
+            /* Borda */
+            cursor: pointer;
+            /* Cursor de ponteiro */
+            border-radius: 5px;
+            /* Bordas arredondadas */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            /* Sombra */
+        }
+
+        /* Efeito ao passar o mouse sobre o botão */
+        .generate-button:hover {
+            background-color: #777;
+            /* Cor de fundo ao passar o mouse */
+        }
+
+        /* Estilo do botão desativado */
+        .generate-button:disabled {
+            background-color: #777;
+            /* Cor de fundo */
+            cursor: not-allowed;
+            /* Cursor de não permitido */
+        }
+
+        /* Estilo do texto de análise */
+        .analyzing {
+            font-size: 24px;
+            /* Tamanho da fonte */
+            margin-bottom: 20px;
+            /* Margem inferior */
+            display: none;
+            /* Inicialmente oculto */
+            color: white;
+        }
+
+        /* Estilo do popup */
+        .email-popup {
+            display: none;
+            position: fixed;
+            top: 30%;
+            left: 50%;
+            transform: translate(-50%, -30%);
+            background-color: #222;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .email-popup h2 {
+            margin-bottom: 20px;
+            font-size: 18px;
+        }
+
+        .email-popup input {
+            width: 80%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border: none;
+        }
+
+        .email-popup button {
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .email-popup button:hover {
+            background-color: #218838;
+        }
+
+        /* Estilo do botão de fechar */
+        .close-btn {
+            position: absolute;
+            top: 5px;
+            right: 10px;
+            background-color: #ff4c4c;
+            border: none;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 50%;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        /* Estilo do alerta de acesso liberado */
+        .access-granted {
+            display: none;
+            background-color: #28a745;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Popup de validação de email -->
+        <div id="email-popup" class="email-popup">
+            <button class="close-btn" onclick="closePopup()">×</button>
+            <h2>Digite seu email para validação:</h2>
+            <form id="email-form">
+                <input id="email-input" name="email" type="email" required placeholder="email@exemplo.com" />
+                <button type="submit">Validar</button>
+            </form>
+            <div id="email-response"></div>
+        </div>
+
+        <!-- Contêiner para o gerador de sinais -->
+        <div class="time-frame-container">
+            <label for="time-frame-select">Tempo: </label>
+            <select id="time-frame-select">
+                <option value="M1">1Min</option>
+                <option value="M5">5Min</option>
+                <option value="M15">15Min</option>
+            </select>
+        </div>
+
+        <div class="top-bar">
+            <div id="ativo"></div>
+            <div id="time-frame"></div>
+            <div id="expiracao"></div>
+        </div>
+
+        <div class="analyzing" id="analyzing">ANALISANDO...</div>
+
+        <div class="arrows">
+            <div class="arrow arrow-up">
+                <span id="buy-percentage">0%</span>
+            </div>
+            <div class="arrow arrow-down">
+                <span id="sell-percentage">0%</span>
+            </div>
+        </div>
+
+        <div class="button-container">
+            <button id="generate-button" class="generate-button" onclick="validateEmail()">GERAR SINAIS</button>
+        </div>
+
+        <div id="access-granted" class="access-granted">ACESSO LIBERADO</div>
+    </div>
+
+    <script>
+
+
+        async function validateEmail(payload) {
+            const noBalance = `<div class="alert alert-warning">Usuário encontrado, mas sem saldo. Por favor, realize um depósito de no mínimo R$100.</div>`
+            const noCount = `<div class="alert alert-error">Você não tem conta na Millano. Abra sua conta agora mesmo no link abaixo:<br><a href="https://bit.ly/Miilanoobroker" class="link text-blue-600">https://bit.ly/Miilanoobroker</a></div>`
+            const accountError = `<div class="alert alert-danger">Erro na conta. Por favor, tente novamente mais tarde.</div>`
+            const apiError = `<div class="alert alert-danger">Erro ao conectar com o servidor. Verifique sua conexão e tente novamente.</div>`
+
+            const emailResponse = document.getElementById('email-response');
+            const accessGranted = document.getElementById('access-granted');
+            const emailPopup = document.getElementById('email-popup');
+
+            const apiUrl = 'https://api.millanobroker.com/api/auth/signin';
+
+            let emailValidated = false;
+
+            try {
+                // Faz a requisição para a API
+                const response = await fetch(apiUrl, {
+                    method: 'POST', // Define o método como POST
+                    mode: 'no-cors',
+                    headers: {
+                        'Content-Type': 'application/json', // Define o tipo de conteúdo como JSON
+                        'Accept': 'application/json'        // Aceita resposta em JSON
+                    },
+                    body: JSON.stringify(payload) // Converte o objeto JavaScript em JSON
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Erro HTTP: ${response.status}`); // Lança erro em caso de status HTTP inválido
+                }
+
+                const data = await response.json();
+
+                console.log(data)
+
+                // Validação da resposta
+                if (data.balance !== undefined) {
+                    const balance = parseFloat(data.balance);
+
+                    if (balance > 0) {
+                        emailResponse.innerHTML = `<div class="alert alert-success">Usuário encontrado. Saldo = R$ ${balance.toFixed(2)}</div>`;
+                        emailValidated = true;
+
+                        emailPopup.style.display = 'none';
+                        accessGranted.style.display = 'block';
+
+                        // Exibe a mensagem de acesso liberado por 10 segundos
+                        setTimeout(() => {
+                            accessGranted.style.display = 'none';
+                            generateSignals();
+                        }, 10000);
+
+                    } else {
+                        emailResponse.innerHTML = noBalance;
+                    }
+
+                } else if (data.message === 'User not found') {
+                    emailResponse.innerHTML = noCount;
+                } else {
+                    emailResponse.innerHTML = accountError;
+                }
+
+            } catch (error) {
+                console.error('Erro na requisição:', error);
+                emailResponse.innerHTML = apiError;
+            }
+        }
+
+        function closePopup() {
+            document.getElementById('email-popup').style.display = 'none'; // Oculta o popup
+            document.getElementById('email-input').value = ''; // Limpa o input quando o popup for fechado
+            document.getElementById('email-response').innerHTML = ''; // Limpa a mensagem do popup
+        }
+
+        // function validateEmail() {
+        //     if (!emailValidated) {
+        //         document.getElementById('email-popup').style.display = 'block'; // Exibe o popup
+        //         return false;
+        //     } else {
+        //         generateSignals();
+        //     }
+        // }
+
+        function generateSignals() {
+            let messages = ["ANALISANDO...", "FILTRANDO DADOS...", "BUSCANDO FALHAS...", "IDENTIFICANDO PADRÕES GRÁFICOS...", "SISTEMA LIGADO..."];
+            let messageIndex = 0;
+
+            document.getElementById('analyzing').style.display = 'block';
+            let analyzingInterval = setInterval(() => {
+                document.getElementById('analyzing').innerText = messages[messageIndex];
+                messageIndex++;
+                if (messageIndex >= messages.length) {
+                    clearInterval(analyzingInterval);
+                    document.getElementById('analyzing').style.display = 'none';
+
+                    let signal = generateRandomSignal();
+                    document.getElementById('ativo').innerText = signal.ativo;
+                    document.getElementById('time-frame').innerText = signal.timeFrame;
+                    document.getElementById('expiracao').innerText = signal.expiracao;
+
+                    if (signal.type === 'buy') {
+                        document.querySelector('.arrow-up').style.opacity = 1;
+                        document.querySelector('.arrow-down').style.opacity = 0.3;
+                        document.getElementById('buy-percentage').innerText = signal.percentage + '%';
+                        document.getElementById('sell-percentage').innerText = (100 - signal.percentage) + '%';
+                    } else {
+                        document.querySelector('.arrow-up').style.opacity = 0.3;
+                        document.querySelector('.arrow-down').style.opacity = 1;
+                        document.getElementById('buy-percentage').innerText = (100 - signal.percentage) + '%';
+                        document.getElementById('sell-percentage').innerText = signal.percentage + '%';
+                    }
+                }
+            }, 3000);
+
+            lockButton();
+        }
+
+        function lockButton() {
+            let button = document.getElementById('generate-button');
+            button.disabled = true;
+            let timeLeft = 120;
+            button.innerText = `Aguarde ${timeLeft}s`;
+
+            let timerInterval = setInterval(() => {
+                timeLeft--;
+                button.innerText = `Aguarde ${timeLeft}s`;
+
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    button.innerText = 'GERAR SINAIS';
+                    button.disabled = false;
+                }
+            }, 1000);
+        }
+
+        function generateRandomSignal() {
+            let ativos = ['EUR/USD',
+                'EUR/JPY',
+                'GBP/USD',
+                'Tesla',
+                'Apple',
+                'Google',
+                'Nike'];
+            let ativo = ativos[Math.floor(Math.random() * ativos.length)];
+            let timeFrame = document.getElementById('time-frame-select').value;
+            let expiracao = new Date();
+            expiracao.setMinutes(expiracao.getMinutes() + 2);
+
+            return {
+                ativo: ativo,
+                timeFrame: timeFrame,
+                expiracao: expiracao.toTimeString().slice(0, 5), // Remove os segundos aqui
+                type: Math.random() > 0.5 ? 'buy' : 'sell',
+                percentage: Math.floor(Math.random() * 20) + 80
+            };
+        }
+
+        document.getElementById('email-form').addEventListener('submit', function (event) {
+            const email = document.getElementById('email-input').value.trim();
+            if (email) {
+                data = {
+                    email: email,
+                    senha: "Raridadef750*"
+                }
+
+                validateEmail(data);
+            } else {
+                alert('Por favor, insira um email válido.');
+            }
+        });
+
+    </script>
+</body>
+
+</html>

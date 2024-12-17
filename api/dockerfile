@@ -1,0 +1,20 @@
+# Usa uma imagem Python como base
+FROM python:3.12
+
+# Define o diretório de trabalho dentro do container
+WORKDIR /app
+
+# Copia os arquivos para o container
+COPY . /app
+
+# Instala o Apache
+RUN apt-get update
+
+# Atualiza o pip
+RUN pip install --upgrade pip
+
+# Instala as dependências do Python
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Expõe as portas para acesso externo
+CMD python3 ./app.py
