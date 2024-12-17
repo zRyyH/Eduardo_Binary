@@ -60,8 +60,4 @@ def balancesEduardo():
 
 
 if __name__ == '__main__':
-<<<<<<< HEAD
     app.run(debug=True, port=10001)
-=======
-    app.run(debug=True, port=10000)
->>>>>>> 2183fe8dbef7bbd6cc19f9860b653918a6f5e7f2
