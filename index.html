@@ -6,7 +6,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BINARI ORDER BOT</title>
     <style>
+        * {
+            box-sizing: border-box;
+            margin: 0px;
+            padding: 0px;
+            overflow: hidden;
+        }
+
         /* Estilos do gerador de sinais */
+        .master {
+            position: absolute;
+            display: flex;
+            overflow: hidden;
+            align-items: center;
+            justify-content: center;
+            background-color: #222;
+            width: 100%;
+            height: 100%;
+            padding: 20px;
+        }
 
         /* Estilo do contêiner principal */
         .container {
@@ -18,9 +36,6 @@
             /* Bordas arredondadas */
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
             /* Sombra */
-            width: 100%;
-            /* Largura total */
-            height: 80%;
             /* Altura do contêiner */
             display: flex;
             /* Flexbox para centralizar o conteúdo */
@@ -30,6 +45,9 @@
             /* Alinhamento horizontal */
             justify-content: center;
             /* Alinhamento vertical */
+            height: 100%;
+            width: 100%;
+            max-width: 800px;
         }
 
         /* Estilo da barra superior que mostra informações */
@@ -126,15 +144,17 @@
             /* Preenchimento interno */
             margin-bottom: 20px;
             /* Margem inferior */
+            width: 200px;
+            height: 400px;
         }
 
         /* Estilo das setas */
         .arrow {
             position: relative;
             /* Posicionamento relativo para efeitos */
-            width: 180px;
+            width: 100%;
             /* Largura das setas */
-            height: 180px;
+            height: 100%;
             /* Altura das setas */
             margin: 20px 0;
             /* Margem vertical */
@@ -299,51 +319,54 @@
 </head>
 
 <body>
-    <div class="container">
-        <!-- Popup de validação de email -->
-        <div id="email-popup" class="email-popup">
-            <button class="close-btn" onclick="closePopup()">×</button>
-            <h2>Digite seu email para validação:</h2>
-            <form id="email-form">
-                <input id="email-input" name="email" type="email" required placeholder="email@exemplo.com" />
-                <input id="password-input" name="senha" type="password" required placeholder="senha" />
-                <button type="submit">Validar</button>
-            </form>
-            <div id="email-response"></div>
-        </div>
+    <div class="master">
 
-        <!-- Contêiner para o gerador de sinais -->
-        <div class="time-frame-container">
-            <label for="time-frame-select">Tempo: </label>
-            <select id="time-frame-select">
-                <option value="M1">1Min</option>
-                <option value="M5">5Min</option>
-                <option value="M15">15Min</option>
-            </select>
-        </div>
-
-        <div class="top-bar">
-            <div id="ativo"></div>
-            <div id="time-frame"></div>
-            <div id="expiracao"></div>
-        </div>
-
-        <div class="analyzing" id="analyzing">ANALISANDO...</div>
-
-        <div class="arrows">
-            <div class="arrow arrow-up">
-                <span id="buy-percentage">0%</span>
+        <div class="container">
+            <!-- Popup de validação de email -->
+            <div id="email-popup" class="email-popup">
+                <button class="close-btn" onclick="closePopup()">×</button>
+                <h2>Digite seu email para validação:</h2>
+                <form id="email-form">
+                    <input id="email-input" name="email" type="email" required placeholder="email@exemplo.com" />
+                    <input id="password-input" name="senha" type="password" required placeholder="senha" />
+                    <button type="submit">Validar</button>
+                </form>
+                <div id="email-response"></div>
             </div>
-            <div class="arrow arrow-down">
-                <span id="sell-percentage">0%</span>
+
+            <!-- Contêiner para o gerador de sinais -->
+            <div class="time-frame-container">
+                <label for="time-frame-select">Tempo: </label>
+                <select id="time-frame-select">
+                    <option value="M1">1Min</option>
+                    <option value="M5">5Min</option>
+                    <option value="M15">15Min</option>
+                </select>
             </div>
-        </div>
 
-        <div class="button-container">
-            <button id="generate-button" class="generate-button" onclick="checkEmail()">GERAR SINAIS</button>
-        </div>
+            <div class="top-bar">
+                <div id="ativo"></div>
+                <div id="time-frame"></div>
+                <div id="expiracao"></div>
+            </div>
 
-        <div id="access-granted" class="access-granted">ACESSO LIBERADO</div>
+            <div class="analyzing" id="analyzing">ANALISANDO...</div>
+
+            <div class="arrows">
+                <div class="arrow arrow-up">
+                    <span id="buy-percentage">0%</span>
+                </div>
+                <div class="arrow arrow-down">
+                    <span id="sell-percentage">0%</span>
+                </div>
+            </div>
+
+            <div class="button-container">
+                <button id="generate-button" class="generate-button" onclick="checkEmail()">GERAR SINAIS</button>
+            </div>
+
+            <div id="access-granted" class="access-granted">ACESSO LIBERADO</div>
+        </div>
     </div>
 
     <script>
@@ -381,7 +404,7 @@
         function showSignals(token, balance) {
             // Validação da resposta
             if (token !== undefined && balance !== undefined) {
-                if (balance >= 0) {
+                if (balance >= 100) {
                     emailResponse.innerHTML = `<div class="alert alert-success">Usuário encontrado. Saldo = R$ ${balance.toFixed(2)}</div>`;
                     emailValidated = true;
 
